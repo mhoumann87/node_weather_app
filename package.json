@@ -1,0 +1,7 @@
+{
+  "name": "06_weather_app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Michael Houmann <mhoumann87@gmail.com>",
+  "license": "MIT"
+}
