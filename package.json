@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Michael Houmann <mhoumann87@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "postman-request": "^2.88.1-postman.30"
+  }
 }
