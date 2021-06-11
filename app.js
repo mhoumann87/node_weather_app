@@ -13,7 +13,7 @@ const geoUrl = `http://api.positionstack.com/v1/forward?access_key=${apiKey.geo}
 const geoEncodedUrl = encodeURI(geoUrl);
 
 request({ url: geoEncodedUrl, json: true }, (err, res) => {
-  if (error) {
+  if (err) {
     console.error('Unable to connect to the network');
   } else if (res.body.error) {
     console.error('Unable to find location');
@@ -24,15 +24,15 @@ request({ url: geoEncodedUrl, json: true }, (err, res) => {
   }
 });
 
-// request({ url: weatherEncodedUrl, json: true }, (err, res) => {
-//   const info = res.body.current;
-//   if (error) {
-//     console.error('Unable to connect to the weather network');
-//   } else if () {
-//     console.error('Unable to find location');
-//   } else {
-//   console.log(
-//     `The temperature right now is ${info.temperature} degrees, it feels like ${info.feelslike} and the weather is ${info.weather_descriptions}.`
-//   );
-//   }
-// });
+request({ url: weatherEncodedUrl, json: true }, (err, res) => {
+  const info = res.body.current;
+  if (err) {
+    console.error('Unable to connect to the weather network');
+  } else if (res.error) {
+    console.error('Unable to find location');
+  } else {
+    console.log(
+      `The temperature right now is ${info.temperature} degrees, it feels like ${info.feelslike} and the weather is ${info.weather_descriptions}.`
+    );
+  }
+});
