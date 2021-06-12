@@ -6,18 +6,18 @@ const apiKey = require('../api-keys');
 
 const weather = (lat, long, callback) => {
   // set up the url for weatherstack
-  const url = `http://api.weatherstack.com/current?access_key=${apiKey.weather}&query=${lat},${long}&units=m`;
+  const rawUrl = `http://api.weatherstack.com/current?access_key=${apiKey.weather}&query=${lat},${long}&units=m`;
   // URI encode the url
-  const encodedUrl = encodeURI(url);
+  const url = encodeURI(rawUrl);
 
   // make the api call and return the result
-  request({ url: encodedUrl, json: true }, (error, response) => {
+  request({ url, json: true }, (error, { body }) => {
     if (error) {
       callback('Unable to connect to weather service', undefined);
-    } else if (response.body.error) {
+    } else if (body.error) {
       callback('Unable to get weather information', undefined);
     } else {
-      callback(undefined, response.body.current);
+      callback(undefined, body.current);
     }
   });
 };
