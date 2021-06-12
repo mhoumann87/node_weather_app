@@ -6,16 +6,17 @@ const apiKey = require('../api-keys');
 
 const geoCode = (address, callback) => {
   // set up the url
-  const geoUrl = `http://api.positionstack.com/v1/forward?access_key=${apiKey.geo}&query=${address}`;
+  const url = `http://api.positionstack.com/v1/forward?access_key=${apiKey.geo}&query=${address}`;
 
-  // encode the url
-  const geoEncodedUrl = encodeURI(geoUrl);
+  // URI encode the url
+  const encodedUrl = encodeURI(url);
 
   // Get the location info from positionstack and return it
-  request({ url: geoEncodedUrl, json: true }, (error, response) => {
+  request({ url: encodedUrl, json: true }, (error, response) => {
+    //console.log(response.body.data[0]);
     if (error) {
       callback('Unable to connect to location services.', undefined);
-    } else if (response.body.error) {
+    } else if (!response.body.data[0]) {
       callback('Unable to find location', undefined);
     } else {
       callback(undefined, {
