@@ -1,38 +1,26 @@
-const request = require('postman-request');
+// Get the functions
+const geoCode = require('./utils/geocode');
+const weather = require('./utils/weather');
 
-// Get the api key to weatherstack
-const apiKey = require('./api-keys');
+const location = process.argv[2];
 
-let lat, long;
+if (!location) {
+  return console.error('Please provide a location');
+}
 
-const weatherUrl = `http://api.weatherstack.com/current?access_key=${apiKey.weather}&query=37.8267,-122.4233&units=m`;
-const weatherEncodedUrl = encodeURI(weatherUrl);
-
-const geoUrl = `http://api.positionstack.com/v1/forward?access_key=${apiKey.geo}&query=1600 Pennsylvania Ave NW, Washington DC`;
-
-const geoEncodedUrl = encodeURI(geoUrl);
-
-request({ url: geoEncodedUrl, json: true }, (err, res) => {
-  if (err) {
-    console.error('Unable to connect to the network');
-  } else if (res.body.error) {
-    console.error('Unable to find location');
-  } else {
-    lat = res.body.data[0].latitude;
-    long = res.body.data[0].longitude;
-    console.log(lat, long);
+geoCode(location, (error, { longitude, latitude, location, country } = {}) => {
+  if (error) {
+    return console.error(error);
   }
-});
 
-request({ url: weatherEncodedUrl, json: true }, (err, res) => {
-  const info = res.body.current;
-  if (err) {
-    console.error('Unable to connect to the weather network');
-  } else if (res.error) {
-    console.error('Unable to find location');
-  } else {
-    console.log(
-      `The temperature right now is ${info.temperature} degrees, it feels like ${info.feelslike} and the weather is ${info.weather_descriptions}.`
-    );
-  }
+  weather(latitude, longitude, (error, weatherData) => {
+    if (error) {
+      return console.error(error);
+    }
+    const msg = `
+          The weather in ${location}, ${country} is:
+          ${weatherData.weather_descriptions}, the temperature is ${weatherData.temperature} and it feels like ${weatherData.feelslike}.
+        `;
+    console.log(msg);
+  });
 });
